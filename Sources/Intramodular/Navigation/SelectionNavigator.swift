@@ -193,7 +193,10 @@ fileprivate struct NavigateOnPress<Destination: View>: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        Button(toggle: isActive ?? $_internal_isActive) {
+        Button {
+            isActive?.wrappedValue.toggle()
+            _internal_isActive.toggle()
+        } label: {
             content.contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())

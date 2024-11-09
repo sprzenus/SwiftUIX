@@ -42,7 +42,9 @@ public struct FileImportLink<Label: View> {
     }
     
     public var body: some View {
-        Button(toggle: $isPresented) {
+        Button {
+            isPresented.toggle()
+        } label: {
             label.fileImporter(
                 isPresented: $isPresented,
                 allowedContentTypes: allowedContentTypes,

@@ -48,18 +48,18 @@ public struct PopoverPresentationLink<Destination: View, Label: View>: Presentat
             }
             .modalPresentationStyle(.popover(permittedArrowDirections: [.init(arrowEdge)]))
             #else
-            Button(toggle: $isPresented, label: { label })
+            Button { isPresented.toggle() } label: { label }
                 .popover(isPresented: isPresentedBinding) {
                     popoverContent
                 }
             #endif
         } else if isHorizontalCompact {
-            Button(toggle: $isPresented, label: { label })
+            Button { isPresented.toggle() } label: { label }
                 .sheet(isPresented: isPresentedBinding) {
                     popoverContent
                 }
         } else {
-            Button(toggle: $isPresented, label: { label })
+            Button { isPresented.toggle() } label: { label }
                 .popover(isPresented: isPresentedBinding) {
                     popoverContent
                 }

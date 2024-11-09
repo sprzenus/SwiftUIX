@@ -6,21 +6,20 @@ import Swift
 import SwiftUI
 
 /// A control which dismisses an active presentation when triggered.
-public struct DismissPresentationButton<Label: View>: ActionLabelView {
+@MainActor
+public struct DismissPresentationButton<Label: View>: View {
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.presentationManager) private var presentationManager
     @Environment(\.presenter) private var presenter
     
+    public typealias Action = @MainActor () -> Void
+    
     private let action: Action
     private let label: Label
     
-    public init(action: Action, @ViewBuilder label: () -> Label) {
+    public init(action: @escaping Action, @ViewBuilder label: () -> Label) {
         self.action = action
         self.label = label()
-    }
-    
-    public init(@ViewBuilder label: () -> Label) {
-        self.init(action: .empty, label: label)
     }
     
     public var body: some View {
@@ -29,7 +28,7 @@ public struct DismissPresentationButton<Label: View>: ActionLabelView {
     
     public func dismiss() {
         defer {
-            action.perform()
+            action()
         }
         
         if presentationManager.isPresented {
@@ -50,7 +49,7 @@ public struct DismissPresentationButton<Label: View>: ActionLabelView {
 
 extension DismissPresentationButton where Label == Image {
     @available(OSX 11.0, *)
-    public init(action: @escaping () -> Void = { }) {
+    public init(action: @escaping () -> Void) {
         self.init(action: action) {
             Image(systemName: .xmarkCircleFill)
         }
@@ -58,8 +57,8 @@ extension DismissPresentationButton where Label == Image {
 }
 
 extension DismissPresentationButton where Label == Text {
-    public init<S: StringProtocol>(_ title: S) {
-        self.init {
+    public init<S: StringProtocol>(_ title: S, action: @escaping Action) {
+        self.init(action: action) {
             Text(title)
         }
     }

@@ -37,7 +37,7 @@ public struct FullScreenCoverLink<Destination: View, Label: View>: PresentationL
     }
     
     public var body: some View {
-        Button(toggle: $isPresented, label: { label })
+        Button { isPresented.toggle() } label: { label }
             .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss) {
                 destination
                     ._resolveAppKitOrUIKitViewControllerIfAvailable()

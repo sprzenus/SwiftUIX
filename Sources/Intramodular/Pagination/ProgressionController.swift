@@ -31,13 +31,13 @@ extension EnvironmentValues {
 // MARK: - API
 
 /// A button that triggers a regression.
-public struct PreviousButton<Label: View>: ActionLabelView, _ActionPerformingView {
+public struct PreviousButton<Label: View>: View {
     @Environment(\.progressionController) var progressionController
     
-    private let action: Action
+    private let action: @MainActor () -> Void
     private let label: Label
     
-    public init(action: Action, @ViewBuilder label: () -> Label) {
+    public init(action: @escaping @MainActor () -> Void, @ViewBuilder label: () -> Label) {
         self.action = action
         self.label = label()
     }
@@ -47,20 +47,16 @@ public struct PreviousButton<Label: View>: ActionLabelView, _ActionPerformingVie
             label
         }
     }
-    
-    public func transformAction(_ transform: (Action) -> Action) -> Self {
-        .init(action: transform(action), label: { label })
-    }
 }
 
 /// A button that triggers a progression.
-public struct NextButton<Label: View>: ActionLabelView, _ActionPerformingView {
+public struct NextButton<Label: View>: View {
     @Environment(\.progressionController) var progressionController
     
-    private let action: Action
+    private let action: @MainActor () -> Void
     private let label: Label
     
-    public init(action: Action, @ViewBuilder label: () -> Label) {
+    public init(action: @escaping @MainActor () -> Void, @ViewBuilder label: () -> Label) {
         self.action = action
         self.label = label()
     }
@@ -69,9 +65,5 @@ public struct NextButton<Label: View>: ActionLabelView, _ActionPerformingView {
         Button(action: { self.progressionController?.moveToNext() }) {
             label
         }
-    }
-    
-    public func transformAction(_ transform: (Action) -> Action) -> Self {
-        .init(action: transform(action), label: { label })
     }
 }

@@ -83,40 +83,28 @@ extension Action {
     }
 }
 
-public struct PerformAction: _ActionPerformingView {
-    private let action: Action
+public struct PerformAction: View {
+    private let action: @MainActor () -> Void
     private let deferred: Bool
     
     public init(
-        action: Action,
+        action: @escaping @MainActor () -> Void,
         deferred: Bool = true
     ) {
         self.action = action
         self.deferred = deferred
     }
     
-    public init(
-        deferred: Bool = true,
-        action: @escaping () -> Void
-    ) {
-        self.action = .init(action)
-        self.deferred = deferred
-    }
-    
     public var body: ZeroSizeView {
         if deferred {
             DispatchQueue.main.async {
-                self.action.perform()
+                self.action()
             }
         } else {
-            self.action.perform()
+            self.action()
         }
         
         return ZeroSizeView()
-    }
-    
-    public func transformAction(_ transform: (Action) -> Action) -> Self {
-        .init(action: transform(action))
     }
 }
 

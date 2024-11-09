@@ -7,7 +7,7 @@ import SwiftUI
 
 extension Binding {
     @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
-    public init(_from binding: FocusState<Value>.Binding) where Value: Hashable {
+    public init(_from binding: FocusState<Value>.Binding) where Value: Hashable, Value: Sendable {
         self.init(get: { binding.wrappedValue }, set: { binding.wrappedValue = $0 })
     }
 }
